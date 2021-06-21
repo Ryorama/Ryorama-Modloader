@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <option name="defaultObfuscationEnv" value="named:intermediary" />
+        <option name="inMapFileNamedIntermediary" value="C:\Users\ryora\.gradle\caches\fabric-loom\mappings\yarn-1.16.4+build.9-v2.tiny" />
+        <option name="outMapFileNamedIntermediary" value="C:\Users\ryora\Documents\mcmods\Ryorama-Modloader\build\loom-cache\mixin-map-1.16.4-1.16.4+build.9-v2.0.tiny" />
+        <option name="outRefMapFile" value="C:\Users\ryora\Documents\mcmods\Ryorama-Modloader\build\classes\java\main\RyoramaModloader-refmap.json" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-commons/9.1/8b971b182eb5cf100b9e8d4119152d83e00e0fdd/asm-commons-9.1.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-util/9.1/36464a45d871779f3383a8a9aba2b26562a86729/asm-util-9.1.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-analysis/9.1/4f61b83b81d8b659958f4bcc48907e93ecea55a0/asm-analysis-9.1.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-tree/9.1/c333f2a855069cb8eb17a40a3eb8b1b67755d0eb/asm-tree-9.1.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/9.1/a99500cf6eea30535eeac6be73899d048f8d12a8/asm-9.1.jar" />
+        </processorPath>
+        <module name="RyoramaModloader.main" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="1.8" />
+  </component>
+</project>
