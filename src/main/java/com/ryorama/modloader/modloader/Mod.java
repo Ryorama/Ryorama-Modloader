@@ -21,12 +21,12 @@ public class Mod {
         this.jarMod = new JarFile( file.toFile(), false );
         Attributes attributes = this.jarMod.getManifest().getMainAttributes();
         this.version = attributes.getValue("Implementation-Version");
-        this.mainClass = attributes.getValue("LoaderComplex-Main");
-        this.ID = attributes.getValue("LoaderComplex-Modid");
+        this.mainClass = attributes.getValue("Main-Class");
+        this.ID = attributes.getValue("Modid");
     }
 
     public String getName() {
-        return this.file.getFileName().toString().replace(".lc.jar", "");
+        return this.file.getFileName().toString().replace(".jar", "");
     }
 
     public String getVersion() {

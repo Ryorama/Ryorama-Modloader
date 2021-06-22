@@ -1,15 +1,14 @@
 package com.ryorama.modloader;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.UUID;
 
 public class RyoramaModloader {
 
@@ -26,9 +25,10 @@ public class RyoramaModloader {
     public static String[] gameArgs;
     public static URLLoader loader;
 
+    public static ArrayList<String> mods = new ArrayList<>();
+
     public static boolean isServer = false;
 
-    protected Consumer<Mod> mods;
     private static final ModLoader modLoader = new ModLoader();
     protected static final ArrayList<String> additionalURLs = new ArrayList<>();
 
@@ -40,11 +40,6 @@ public class RyoramaModloader {
 
         if (isDev) dir = dir + File.separator + "run";
 
-        modLoader.loadMods();
-
-        URL[] urls = new URL[modLoader.getMods().size() + 1 + additionalURLs.size()];
-        loader = new URLLoader(urls);
-
         String version = "1.16.5";
         String gameDir = dir;
         String main_class = null;
@@ -52,11 +47,11 @@ public class RyoramaModloader {
         boolean isDir = false;
         boolean isMain = false;
 
-        List<String> argsLists = Arrays.asList(args);
-
-        String[] globalArgs = new String[]{
-                "--gameDir", gameDir, "--username", "FlameDev", "--assetsDir", findMCDir() + File.separator + "assets" + File.separator, "--accessToken", "PLEASE FLAME WORK I BEG YOU", "--uuid", UUID.randomUUID().toString(), "--userType", "mojang", "--versionType", "release"
-        };
+        if (args.length == 0) {
+            args = new String[]{
+                    "--username", "RyoramaModloader", "--assetsDir", findMCDir(false) + "\\assets\\", "--accessToken", "", "--uuid", UUID.randomUUID().toString(), "--userType", "mojang", "--versionType", "release"
+            };
+        }
 
         for (String s : args) {
             if (s.equals("--version")) {
@@ -89,6 +84,7 @@ public class RyoramaModloader {
                     writer.write("main_class:net.minecraft.client.main.Main");
                     writer.close();
                 } catch (Throwable err) {
+                    logger.error("Failed to find main class", err);
                 }
             }
 
@@ -103,27 +99,42 @@ public class RyoramaModloader {
                 }
                 sc.close();
             } catch (Throwable err) {
+                logger.error("Failed to find main class (step 2)", err);
+            }
+        }
+
+        modLoader.loadMods();
+        logger.info("Successfully loaded mods!");
+
+        URL[] urls = new URL[mods.size() + 1 + additionalURLs.size()];
+
+        logger.info("Setting up...");
+
+        try {
+            for (int i = 0; i < mods.size(); i++) {
+                String s = mods.get(i);
+                urls[i + 1] = new File(s).toURL();
             }
 
-            try {
-                loader.loadClass("net.minecraft.client.main.Main").getMethod("main", String[].class).invoke(null, (Object)args);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            for (int i = 0; i < additionalURLs.size(); i++) {
+                String s = additionalURLs.get(i);
+                urls[i + mods.size() + 1] = new File(s).toURL();
             }
+        } catch (Throwable err) {
+            logger.error("Failed to setup mods", err);
+        }
+
+        loader = new URLLoader(urls);
+
+        logger.info("Starting Minecraft");
+        try {
+            loader.loadClass("net.minecraft.client.main.Main").getMethod("main", String[].class).invoke(null, (Object)args);
+        } catch (Throwable err) {
+            logger.error("Failed to start Minecraft", err);
         }
     }
 
-    public static String findMCDir() {
+    public static String findMCDir(boolean b) {
         String home = System.getProperty("user.home", ".");
         String os = System.getProperty("os.name").toLowerCase();
         String mcDir;

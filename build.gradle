@@ -13,22 +13,9 @@ plugins {
     id("fabric-loom") version "0.5-SNAPSHOT"
 }
 
-java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this task, sources will not be generated.
-	withSourcesJar()
-}
-
 repositories {
-    maven { url 'https://repo1.maven.org/maven2' }
-    maven { url 'https://jitpack.io' }
     maven { url 'https://libraries.minecraft.net' }
     maven { url 'https://maven.fabricmc.net' }
-    maven { url 'https://clojars.org/repo/' }
-    mavenCentral()
-    mavenLocal()
-    jcenter()
 }
 
 configurations {
@@ -37,7 +24,6 @@ configurations {
 
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
-    api 'org.apache.commons:commons-math3:3.6.1'
 
 	minecraft "com.mojang:minecraft:1.16.4"
 	mappings "net.fabricmc:yarn:1.16.4+build.9:v2"
@@ -45,11 +31,6 @@ dependencies {
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation 'com.google.guava:guava:28.0-jre'
 
-    // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
-    
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    
     // https://mvnrepository.com/artifact/org.apache.bcel/bcel
     // extraLibs group: 'org.apache.bcel', name: 'bcel', version: '6.0'
 
@@ -64,30 +45,25 @@ dependencies {
 	annotationProcessor "org.ow2.asm:asm-commons:${project.asm_version}"
 	annotationProcessor "org.ow2.asm:asm-tree:${project.asm_version}"
 	annotationProcessor "org.ow2.asm:asm-util:${project.asm_version}"
-	
 
-	compile group: 'org.apache.bcel', name: 'bcel', version: '6.0'
+    implementation files('log4j-1.2-api-2.14.1.jar')
 
-    // https://mvnrepository.com/artifact/org.ow2.asm/asm
-    compile group: 'org.ow2.asm', name: 'asm', version: '8.0.1'
-    // https://mvnrepository.com/artifact/org.ow2.asm/asm-commons
-    compile group: 'org.ow2.asm', name: 'asm-commons', version: '8.0.1'
-    // https://mvnrepository.com/artifact/org.ow2.asm/asm-tree
-    compile group: 'org.ow2.asm', name: 'asm-tree', version: '8.0.1'
-    // https://mvnrepository.com/artifact/org.ow2.asm/asm-util
-    compile group: 'org.ow2.asm', name: 'asm-util', version: '8.0.1'
-    //https://mvnrepository.com/artifact/org.json/json
+    implementation group: 'org.apache.bcel', name: 'bcel', version: '6.0'
     extraLibs group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
     extraLibs group: 'net.lingala.zip4j', name: 'zip4j', version: '2.6.3'
-    
-   	configurations.compile.extendsFrom(configurations.extraLibs)
+
+   	configurations.implementation.extendsFrom(configurations.extraLibs)
+}
+
+ext {
+    MANIFEST = manifest {
+        attributes('Main-Class': 'com.ryorama.installer.ModloaderInstaller')
+    }
 }
 
 jar {
- manifest {
-        attributes 'Main-Class': 'com.ryorama.modloader.installer.ModloaderInstaller'
-    }
+    manifest.from(MANIFEST)
     from {
         configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
-	}
+    }
 }
